@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -65,6 +66,7 @@ fun GeoQuizScreen(modifier: Modifier = Modifier) {
     }
 
     var currentIndex by remember { mutableIntStateOf(0) }
+    var isAnswered by remember { mutableStateOf(false) }
 
     fun checkAnswer(userAnswer: Boolean) {
         val correctAnswer = questionBank[currentIndex].answer
@@ -73,6 +75,7 @@ fun GeoQuizScreen(modifier: Modifier = Modifier) {
         } else {
             R.string.incorrect_toast
         }
+        isAnswered = true
         Toast.makeText(context, messageResId, Toast.LENGTH_SHORT).show()
     }
 
@@ -92,15 +95,17 @@ fun GeoQuizScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Button(onClick = { checkAnswer(true) }) {
-                Text(text = stringResource(id = R.string.true_button))
-            }
+        if (!isAnswered) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Button(onClick = { checkAnswer(true) }) {
+                    Text(text = stringResource(id = R.string.true_button))
+                }
 
-            Button(onClick = { checkAnswer(false) }) {
-                Text(text = stringResource(id = R.string.false_button))
+                Button(onClick = { checkAnswer(false) }) {
+                    Text(text = stringResource(id = R.string.false_button))
+                }
             }
         }
 
@@ -108,6 +113,7 @@ fun GeoQuizScreen(modifier: Modifier = Modifier) {
 
         Button(onClick = {
             currentIndex = (currentIndex + 1) % questionBank.size
+            isAnswered = false
         }) {
             Text(text = stringResource(id = R.string.next_button))
         }
