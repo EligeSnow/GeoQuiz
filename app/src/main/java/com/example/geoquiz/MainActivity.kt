@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -68,12 +69,18 @@ fun GeoQuizScreen(modifier: Modifier = Modifier) {
 
     var currentIndex by remember { mutableIntStateOf(0) }
     var isAnswered by remember { mutableStateOf(false) }
+    var correctAnswersCount by remember { mutableIntStateOf(0) }
 
     val isLastQuestionAnswered = currentIndex == questionBank.size - 1 && isAnswered
 
     fun checkAnswer(userAnswer: Boolean) {
         val correctAnswer = questionBank[currentIndex].answer
-        val messageResId = if (userAnswer == correctAnswer) {
+        val isCorrect = userAnswer == correctAnswer
+        if (isCorrect) {
+            correctAnswersCount++
+        }
+
+        val messageResId = if (isCorrect) {
             R.string.correct_toast
         } else {
             R.string.incorrect_toast
@@ -89,6 +96,17 @@ fun GeoQuizScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(
+            text = stringResource(
+                id = R.string.question_progress,
+                currentIndex + 1,
+                questionBank.size
+            ),
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
         Text(
             text = stringResource(id = questionBank[currentIndex].textResId),
             fontSize = 20.sp,
