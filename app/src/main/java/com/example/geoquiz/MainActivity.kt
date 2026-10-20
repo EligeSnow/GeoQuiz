@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.geoquiz.ui.theme.GeoQuizTheme
@@ -67,6 +68,8 @@ fun GeoQuizScreen(modifier: Modifier = Modifier) {
 
     var currentIndex by remember { mutableIntStateOf(0) }
     var isAnswered by remember { mutableStateOf(false) }
+
+    val isLastQuestionAnswered = currentIndex == questionBank.size - 1 && isAnswered
 
     fun checkAnswer(userAnswer: Boolean) {
         val correctAnswer = questionBank[currentIndex].answer
@@ -111,11 +114,25 @@ fun GeoQuizScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(onClick = {
-            currentIndex = (currentIndex + 1) % questionBank.size
-            isAnswered = false
-        }) {
-            Text(text = stringResource(id = R.string.next_button))
+        if (!isLastQuestionAnswered) {
+            Button(
+                onClick = {
+                    if (currentIndex < questionBank.size - 1) {
+                        currentIndex++
+                        isAnswered = false
+                    }
+                }
+            ) {
+                Text(text = stringResource(id = R.string.next_button))
+            }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GeoQuizScreenPreview() {
+    GeoQuizTheme {
+        GeoQuizScreen()
     }
 }
