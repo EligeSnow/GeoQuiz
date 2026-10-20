@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -87,6 +89,23 @@ fun GeoQuizScreen(modifier: Modifier = Modifier) {
         }
         isAnswered = true
         Toast.makeText(context, messageResId, Toast.LENGTH_SHORT).show()
+
+        if (currentIndex == questionBank.size - 1) {
+            val scorePercent = (correctAnswersCount * 100) / questionBank.size
+            val resultMsg = context.resources.getString(
+                R.string.quiz_result_message,
+                correctAnswersCount,
+                questionBank.size,
+                scorePercent
+            )
+            Toast.makeText(context, resultMsg, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun restartQuiz() {
+        currentIndex = 0
+        isAnswered = false
+        correctAnswersCount = 0
     }
 
     Column(
@@ -144,6 +163,31 @@ fun GeoQuizScreen(modifier: Modifier = Modifier) {
                 Text(text = stringResource(id = R.string.next_button))
             }
         }
+    }
+
+    if (isLastQuestionAnswered) {
+        val scorePercent = (correctAnswersCount * 100) / questionBank.size
+        AlertDialog(
+            onDismissRequest = { },
+            title = {
+                Text(text = stringResource(id = R.string.quiz_finished_title))
+            },
+            text = {
+                Text(
+                    text = stringResource(
+                        id = R.string.quiz_result_message,
+                        correctAnswersCount,
+                        questionBank.size,
+                        scorePercent
+                    )
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { restartQuiz() }) {
+                    Text(text = stringResource(id = R.string.restart_button))
+                }
+            }
+        )
     }
 }
 

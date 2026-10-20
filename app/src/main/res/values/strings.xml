@@ -13,4 +13,7 @@
     <string name="incorrect_toast">Incorrect!</string>
     <string name="question_progress">Question %1$d of %2$d</string>
     <string name="score_text">Score: %1$d / %2$d</string>
+    <string name="quiz_finished_title">Quiz Completed!</string>
+    <string name="quiz_result_message">You answered %1$d out of %2$d questions correctly (%3$d%%).</string>
+    <string name="restart_button">Restart Quiz</string>
 </resources>
